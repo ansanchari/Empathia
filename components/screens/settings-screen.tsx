@@ -570,26 +570,28 @@ export function SettingsScreen() {
                 <hr className="flex-1 border-border" />
               </div>
 
-              <div className="flex flex-col gap-2">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Enter Partner Code</span>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="e.g. ABCD12"
-                    maxLength={6}
-                    value={partnerCodeInput}
-                    onChange={(e) => setPartnerCodeInput(e.target.value.toUpperCase())}
-                    className="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-center font-mono text-lg tracking-[0.25em] text-foreground placeholder:text-muted-foreground placeholder:tracking-normal placeholder:font-sans placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                  />
-                  <button
-                    onClick={handleLinkPartner}
-                    disabled={linking || partnerCodeInput.length !== 6}
-                    className="rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-105 active:scale-95 disabled:opacity-50"
-                  >
-                    {linking ? "..." : "Link"}
-                  </button>
-                </div>
-              </div>
+<div className="flex flex-col gap-2">
+  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Enter Partner Code</span>
+  {/* Changed from flex-row to flex-col to stack them vertically */}
+  <div className="flex flex-col gap-3">
+    <input
+      type="text"
+      placeholder="e.g. ABCD12"
+      maxLength={6}
+      value={partnerCodeInput}
+      onChange={(e) => setPartnerCodeInput(e.target.value.toUpperCase())}
+      className="w-full rounded-xl border border-border bg-background px-4 py-3 text-center font-mono text-lg tracking-[0.25em] text-foreground placeholder:text-muted-foreground placeholder:tracking-normal placeholder:font-sans placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+    />
+    <button
+      onClick={handleLinkPartner}
+      disabled={linking || partnerCodeInput.length !== 6}
+      // Changed to w-full and py-3.5 to make it a nice, thick mobile button
+      className="w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-105 active:scale-95 disabled:opacity-50"
+    >
+      {linking ? "Linking..." : "Link Partner"}
+    </button>
+  </div>
+</div>
             </div>
           )}
         </motion.section>
