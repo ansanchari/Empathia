@@ -2,7 +2,7 @@
 
 A premium, real-time dedicated space for shared emotional awareness, designed to help partners (may it be of any kind, e.g., spouses, parent-child, friends, siblings, partners, couples) stay in sync. Built with a focus on mindful design, tactile interactions, and absolute data privacy.
 
-**Live Demo:** [Insert Your Live Vercel Link Here]
+**Live Demo:** [https://empathia-app.vercel.app]
 
 ## Features
 
@@ -69,7 +69,3 @@ Empathia relies on a relational PostgreSQL database with the following core tabl
 * `messages`: Real-time chat history.
 
 **Row Level Security (RLS)** is strictly enforced across all tables. A comprehensive SQL script is required to set up the necessary tables, policies, and real-time triggers before deployment.
-
-```
-
-```
