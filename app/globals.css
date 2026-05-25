@@ -1,0 +1,119 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Tells Tailwind to support 'dark:bg-red-500' utility classes */
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  /* --- LIGHT MODE --- */
+  :root {
+    --background: #FDFBFF;
+    --foreground: #2D2447;
+    --card: #FFFFFF;
+    --card-foreground: #2D2447;
+    --popover: #FFFFFF;
+    --popover-foreground: #2D2447;
+    --primary: #818CF8;
+    --primary-foreground: #FFFFFF;
+    --secondary: #EEF2FF;
+    --secondary-foreground: #3730A3;
+    --muted: #F3F4F6;
+    --muted-foreground: #64748B;
+    --accent: #6366F1;
+    --accent-foreground: #FFFFFF;
+    --destructive: #F43F5E;
+    --destructive-foreground: #FFFFFF;
+    --border: #E0E7FF;
+    --input: #E0E7FF;
+    --ring: #818CF8;
+    --radius: 1rem;
+    
+    --sidebar: #FFFFFF;
+    --sidebar-foreground: #2D2447;
+    --sidebar-primary: #818CF8;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #EEF2FF;
+    --sidebar-accent-foreground: #2D2447;
+    --sidebar-border: #E0E7FF;
+    --sidebar-ring: #818CF8;
+  }
+
+  /* --- DARK MODE (The missing piece!) --- */
+  .dark {
+    --background: #13111C;      /* Deep midnight eggplant */
+    --foreground: #F8FAFC;      /* Crisp off-white text */
+    --card: #1E1A2D;            /* Slightly lighter purple for cards */
+    --card-foreground: #F8FAFC;
+    --popover: #1E1A2D;
+    --popover-foreground: #F8FAFC;
+    --primary: #A5B4FC;         /* Brighter, glowing lavender */
+    --primary-foreground: #13111C; /* Dark text on bright buttons */
+    --secondary: #2D2447;       /* Muted dark purple */
+    --secondary-foreground: #E0E7FF;
+    --muted: #221C35;
+    --muted-foreground: #94A3B8;
+    --accent: #818CF8;
+    --accent-foreground: #F8FAFC;
+    --destructive: #EF4444;
+    --destructive-foreground: #F8FAFC;
+    --border: #3730A3;          /* Dark visible borders */
+    --input: #3730A3;
+    --ring: #A5B4FC;
+    
+    --sidebar: #1E1A2D;
+    --sidebar-foreground: #F8FAFC;
+    --sidebar-primary: #A5B4FC;
+    --sidebar-primary-foreground: #13111C;
+    --sidebar-accent: #2D2447;
+    --sidebar-accent-foreground: #F8FAFC;
+    --sidebar-border: #3730A3;
+    --sidebar-ring: #A5B4FC;
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-dm-sans), 'Geist', sans-serif;
+  --font-serif: var(--font-dm-serif), Georgia, serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    /* Added a beautiful 0.3s transition here so it fades instead of snapping! */
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+}
