@@ -17,7 +17,7 @@ export function BottomNav() {
   const [showWarning, setShowWarning] = useState(false)
 
   const handleNavigation = (targetScreen: Screen) => {
-    // THE INTERCEPTOR: Show custom in-app warning instead of browser alert
+    //Show custom in-app warning instead of browser alert
     if (targetScreen === "dashboard" && hasLoggedMoodToday === false) {
       setShowWarning(true)
       
@@ -36,7 +36,7 @@ export function BottomNav() {
 
   return (
     <>
-      {/* --- NEW: In-App Toast Notification --- */}
+      {/*NEW: In-App Toast Notification*/}
       <AnimatePresence>
         {showWarning && (
           <motion.div

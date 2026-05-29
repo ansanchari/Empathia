@@ -14,7 +14,6 @@ interface CopilotProps {
 export function CopilotCard({ partnerName, hasHistory, chartData, latestContext }: CopilotProps) {
   const [insight, setInsight] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
-  // --- NEW: State to track user consent ---
   const [hasConsented, setHasConsented] = useState(false)
 
   const handleGenerate = async () => {
@@ -22,14 +21,12 @@ export function CopilotCard({ partnerName, hasHistory, chartData, latestContext 
     setIsGenerating(true)
     
     try {
-      // 1. Grab the full session, not just the user ID
       const { data: { session } } = await supabase.auth.getSession()
 
       const response = await fetch('/api/copilot', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          // --- NEW: Handing the VIP Pass to the backend ---
           'Authorization': `Bearer ${session?.access_token}` 
         },
         body: JSON.stringify({ 
@@ -78,7 +75,6 @@ export function CopilotCard({ partnerName, hasHistory, chartData, latestContext 
               AI can analyze {partnerName}'s recent mood trends and context notes to provide personalized support advice.
             </p>
             
-            {/* --- NEW: The Consent Checkbox --- */}
             <label className="mt-3 flex items-center gap-2 cursor-pointer text-xs text-muted-foreground hover:text-foreground transition-colors px-4">
               <input 
                 type="checkbox" 
@@ -91,7 +87,6 @@ export function CopilotCard({ partnerName, hasHistory, chartData, latestContext 
               </span>
             </label>
 
-            {/* --- UPDATED: Button is disabled if !hasConsented --- */}
             <button
               onClick={handleGenerate}
               disabled={isGenerating || !hasConsented}

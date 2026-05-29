@@ -4,11 +4,10 @@ import { Logo } from "@/components/ui/logo"
 
 import { useApp } from "@/lib/app-context"
 import { supabase } from "@/lib/supabaseClient"
-import { ChevronLeft, Send, Loader2, MessagesSquare, Check, CheckCheck } from "lucide-react" // <-- ADDED Check and CheckCheck
+import { ChevronLeft, Send, Loader2, MessagesSquare, Check, CheckCheck } from "lucide-react" 
 import { useRef, useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
-// --- ADDED is_read to the interface ---
 interface ChatMessage {
   id: string
   sender_id: string
@@ -61,7 +60,7 @@ export function ChatScreen() {
       if (history && isMounted) {
         setMessages(history)
         
-        // --- NEW: Mark unread messages from partner as read on initial load ---
+        //Mark unread messages from partner as read on initial load
         const unreadIds = history
           .filter(m => m.sender_id !== sessionUser?.id && !m.is_read)
           .map(m => m.id)
@@ -78,7 +77,7 @@ export function ChatScreen() {
         .on(
           'postgres_changes',
           {
-            event: '*', // --- UPDATED: Now listening to ALL events (INSERT and UPDATE) ---
+            event: '*',
             schema: 'public',
             table: 'messages',
             filter: `relationship_id=eq.${rel.id}`
@@ -91,13 +90,13 @@ export function ChatScreen() {
                 return [...prev, newMsg]
               })
               
-              // --- NEW: If you have the chat open and receive a message, instantly mark it read ---
+              //If you have the chat open and receive a message, instantly mark it read
               if (newMsg.sender_id !== sessionUser?.id) {
                 supabase.from('messages').update({ is_read: true }).eq('id', newMsg.id).then()
               }
             }
 
-            // --- NEW: Update the UI when a message gets marked as read ---
+            //Update the UI when a message gets marked as read
             if (payload.eventType === 'UPDATE') {
               const updatedMsg = payload.new as ChatMessage
               setMessages((prev) => prev.map(msg => msg.id === updatedMsg.id ? updatedMsg : msg))

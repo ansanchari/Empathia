@@ -9,7 +9,6 @@ import {
   TrendingDown,
   TrendingUp,
   Minus,
-  Heart,
   MessageCircle,
   AlertTriangle,
   Clock,
@@ -19,14 +18,14 @@ import {
   Info,
   Quote,
   Link2,
-  Sparkles // <-- NEW icon for the Cycle Sync banner
+  Sparkles
 } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { MoodChart } from "../ui/MoodChart"
 import { CopilotCard } from "../ui/CopilotCard"
 import { motion, Variants, AnimatePresence } from "framer-motion"
 
-// --- Animation Variants ---
+//Animation Variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -184,7 +183,7 @@ export function DashboardScreen() {
 
     const partnerId = relationship.user_a_id === user.id ? relationship.user_b_id : relationship.user_a_id
 
-    // UPDATED: Now fetching biological cycle data from the partner's profile
+    //fetching biological cycle data from the partner's profile
     const { data: partnerProfile } = await supabase.from('profiles').select('*').eq('id', partnerId).single()
     const { data: moodLogs } = await supabase.from('mood_logs').select('score, context, is_private, created_at').eq('user_id', partnerId).order('created_at', { ascending: false }).limit(5)
 
@@ -267,14 +266,11 @@ export function DashboardScreen() {
 
   if (loading) return <div className="flex w-full min-h-screen flex-1 items-center justify-center px-5 pb-28 pt-8"><p className="text-muted-foreground animate-pulse">Loading partner data...</p></div>
   
-  // ==========================================
-  // NEW: Premium Empty State Hero
-  // ==========================================
+  //Premium Empty State Hero
   if (!dbPartner) {
     return (
       <div className="flex w-full min-h-screen flex-1 flex-col items-center justify-center px-5 pb-28 pt-8 relative overflow-hidden">
         
-        {/* Animated Background Glow */}
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -313,15 +309,11 @@ export function DashboardScreen() {
       </div>
     )
   }
-
-  // ==========================================
-  // NEW: Biological Context Engine Calculator
-  // ==========================================
+  //Biological Context Engine Calculator
   let isSensitivePhase = false
   let cycleMessage = ""
   
   if (dbPartner.trackCycle && dbPartner.lastPeriodStart) {
-    // Calculate how many days it has been since the first day of their last period
     const daysSince = Math.floor((new Date().getTime() - new Date(dbPartner.lastPeriodStart).getTime()) / (1000 * 3600 * 24))
     const cycleDay = daysSince % dbPartner.cycleLength
     
@@ -413,7 +405,7 @@ export function DashboardScreen() {
           </div>
         </motion.header>
 
-        {/* --- NEW: Cycle Sync Insight Banner --- */}
+        {/*Cycle Sync Insight Banner*/}
         <AnimatePresence>
           {isSensitivePhase && (
             <motion.div 
@@ -433,12 +425,12 @@ export function DashboardScreen() {
           )}
         </AnimatePresence>
 
-        {/* --- Main Mood Score Card with Breathing Orb --- */}
+        {/*Main Mood Score Card with Breathing Orb*/}
         <motion.div 
           variants={itemVariants}
           className={`relative overflow-hidden rounded-3xl border-2 p-6 shadow-sm transition-colors ${!dbPartner.hasHistory ? "border-border bg-card opacity-80" : isLow ? "border-accent bg-card" : "border-border bg-card"}`}
         >
-          {/* NEW: The Background Breathing Orb */}
+          {/*The Background Breathing Orb */}
           {dbPartner.hasHistory && (
             <motion.div
               animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.6, 0.3] }}
@@ -479,7 +471,7 @@ export function DashboardScreen() {
           </div>
         </motion.div>
 
-        {/* --- Mood Chart --- */}
+        {/*Mood Chart*/}
         {dbPartner.hasHistory && (
           <motion.div variants={itemVariants}>
             <MoodChart 
@@ -489,7 +481,7 @@ export function DashboardScreen() {
           </motion.div>
         )}
 
-        {/* --- Copilot Card --- */}
+        {/*Copilot Card*/}
         <motion.div variants={itemVariants}>
           <CopilotCard 
             partnerName={dbPartner.name} 
@@ -499,7 +491,7 @@ export function DashboardScreen() {
           />
         </motion.div>
 
-        {/* --- Context Section --- */}
+        {/*Context Section*/}
         <motion.section variants={itemVariants} className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-5 shadow-sm">
           <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{"What's on their mind"}</h3>
           <p className={`text-sm leading-relaxed ${dbPartner.hasHistory && dbPartner.context && !dbPartner.isContextPrivate ? "text-foreground italic" : "text-muted-foreground"}`}>
@@ -513,7 +505,7 @@ export function DashboardScreen() {
           </p>
         </motion.section>
 
-        {/* --- Primary CTA Button --- */}
+        {/*Primary CTA Button*/}
         <motion.button 
           variants={itemVariants}
           onClick={() => setReachOutModalOpen(true)} 
@@ -528,7 +520,7 @@ export function DashboardScreen() {
           Reach Out to {dbPartner.name}
         </motion.button>
 
-        {/* --- Bottom Quote --- */}
+        {/*Bottom Quote*/}
         <motion.div variants={itemVariants} className="mt-4 flex flex-col items-center justify-center gap-3 px-4 py-8 text-center opacity-70">
           <Quote className="h-6 w-6 text-muted-foreground/50" />
           <p className="font-serif text-lg text-muted-foreground italic leading-relaxed">

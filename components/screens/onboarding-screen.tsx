@@ -21,7 +21,7 @@ export function OnboardingScreen() {
   const [cycleLength, setCycleLength] = useState(28)
   const [lastPeriodStart, setLastPeriodStart] = useState("")
   
-  // NEW: Optional Partner Code State
+  //Optional Partner Code State
   const [partnerCodeInput, setPartnerCodeInput] = useState("")
 
   const shouldShowCycleSync = gender === "Female" || gender === "Non-Binary"
@@ -32,9 +32,7 @@ export function OnboardingScreen() {
 
     try {
       if (isLoginMode) {
-        // ==========================================
-        // 1. THE EXPLICIT LOGIN FLOW
-        // ==========================================
+        //THE EXPLICIT LOGIN FLOW
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -63,12 +61,10 @@ export function OnboardingScreen() {
         }
 
         setSessionUser(signInData.user)
-        setScreen("dashboard") // Returning users go straight to the dashboard!
+        setScreen("dashboard")
 
       } else {
-        // ==========================================
-        // 2. THE EXPLICIT SIGN UP FLOW
-        // ==========================================
+        //EXPLICIT SIGN UP FLOW
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
@@ -91,12 +87,11 @@ export function OnboardingScreen() {
             gender: gender,
             track_cycle: trackCycle,
             cycle_length: cycleLength,
-            last_period_start: safeLastPeriod // Included the empty-string fix here!
+            last_period_start: safeLastPeriod
           })
 
         if (dbError) throw dbError
 
-        // --- NEW: Optional Linking Logic ---
         if (partnerCodeInput.length === 6) {
           const { data: partnerRel } = await supabase
             .from('relationships')
@@ -112,12 +107,11 @@ export function OnboardingScreen() {
               .eq('id', partnerRel.id)
           }
         }
-        // -----------------------------------
 
         // Update local app state
         updateProfile({ name, gender, trackCycle, cycleLength, lastPeriodStart: safeLastPeriod || "" })
         setSessionUser(signUpData.user)
-        setScreen("mood") // Brand new users go to the mood screen to log their first anchor memory!
+        setScreen("mood")
       }
       
     } catch (error: any) {
@@ -263,7 +257,7 @@ export function OnboardingScreen() {
                 </div>
               )}
 
-              {/* NEW: Optional Partner Code */}
+              {/*Optional Partner Code */}
               <div className="flex flex-col gap-2 mt-2 animate-in fade-in">
                 <label className="text-sm font-semibold text-foreground px-1">Partner Code (Optional)</label>
                 <div className="relative">

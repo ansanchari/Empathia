@@ -16,7 +16,6 @@ import { BreathingBackground } from "@/components/ui/breathing-background"
 function AppLayout() {
   const { screen, setScreen, sessionUser, hasLoggedMoodToday, setHasLoggedMoodToday } = useApp()
   
-  // Start the app in a "verifying" state so it doesn't accidentally kick you out
   const [isVerifying, setIsVerifying] = useState(true)
 
   // EFFECT 1: Ask the database for the truth on initial load
@@ -96,7 +95,7 @@ function AppLayout() {
         {/* NEW: The Magic Animation Wrapper */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={screen} // Tells framer to animate when this changes
+            key={screen}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}

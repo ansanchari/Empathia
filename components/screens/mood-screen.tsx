@@ -1,6 +1,5 @@
 "use client"
 
-import { Logo } from "@/components/ui/logo"
 
 import { useState, useEffect } from "react"
 import { supabase } from '@/lib/supabaseClient' 
@@ -9,7 +8,7 @@ import { EyeOff, Eye, Send, Smile, Frown, Meh, Loader2, Plus, Check, MessageSqua
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition"
 import { motion, Variants, AnimatePresence } from "framer-motion"
 
-// --- Animation Variants ---
+//Animation Variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -42,16 +41,16 @@ const POSITIVE_TAGS = [
 ]
 
 const moodLabels: Record<number, { label: string; color: string }> = {
-  1: { label: "Very Low", color: "#6366F1" }, // Indigo 500
-  2: { label: "Low", color: "#818CF8" },     // Indigo 400
-  3: { label: "Down", color: "#A5B4FC" },    // Indigo 300
-  4: { label: "Below Average", color: "#94A3B8" }, // Slate 400
-  5: { label: "Neutral", color: "#64748B" },       // Slate 500
-  6: { label: "Okay", color: "#475569" },          // Slate 600
-  7: { label: "Good", color: "#38BDF8" },          // Sky 400
-  8: { label: "Great", color: "#0EA5E9" },         // Sky 500
-  9: { label: "Wonderful", color: "#0284C7" },     // Sky 600
-  10: { label: "Excellent", color: "#0369A1" },    // Sky 700
+  1: { label: "Very Low", color: "#6366F1" },
+  2: { label: "Low", color: "#818CF8" },
+  3: { label: "Down", color: "#A5B4FC" },
+  4: { label: "Below Average", color: "#94A3B8" },
+  5: { label: "Neutral", color: "#64748B" },
+  6: { label: "Okay", color: "#475569" },
+  7: { label: "Good", color: "#38BDF8" },
+  8: { label: "Great", color: "#0EA5E9" },
+  9: { label: "Wonderful", color: "#0284C7" },
+  10: { label: "Excellent", color: "#0369A1" },
 }
 
 function getMoodIcon(score: number) {
@@ -223,7 +222,7 @@ export function MoodScreen() {
           </p>
         </motion.header>
 
-        {/* UPGRADED: Dynamic Breathing Mood Card */}
+        {/*Dynamic Breathing Mood Card */}
         <motion.div 
           variants={itemVariants} 
           animate={{ 
@@ -326,7 +325,7 @@ export function MoodScreen() {
             </button>
           </div>
 
-          {/* UPGRADED: The Quick Chips Grid with Tactile Feedback */}
+          {/*The Quick Chips Grid with Tactile Feedback */}
           <div className="flex flex-wrap gap-2.5">
             {currentTags.map(tag => {
               const isSelected = selectedTags.includes(tag)

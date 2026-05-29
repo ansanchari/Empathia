@@ -1,11 +1,11 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-/* Tells Tailwind to support 'dark:bg-red-500' utility classes */
+/*support 'dark:bg-red-500' utility classes */
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
-  /* --- LIGHT MODE --- */
+  /*LIGHT MODE*/
   :root {
     --background: #FDFBFF;
     --foreground: #2D2447;
@@ -38,17 +38,17 @@
     --sidebar-ring: #818CF8;
   }
 
-  /* --- DARK MODE (The missing piece!) --- */
+  /*DARK MODE*/
   .dark {
-    --background: #13111C;      /* Deep midnight eggplant */
-    --foreground: #F8FAFC;      /* Crisp off-white text */
-    --card: #1E1A2D;            /* Slightly lighter purple for cards */
+    --background: #13111C;      
+    --foreground: #F8FAFC;      
+    --card: #1E1A2D;            
     --card-foreground: #F8FAFC;
     --popover: #1E1A2D;
     --popover-foreground: #F8FAFC;
-    --primary: #A5B4FC;         /* Brighter, glowing lavender */
-    --primary-foreground: #13111C; /* Dark text on bright buttons */
-    --secondary: #2D2447;       /* Muted dark purple */
+    --primary: #A5B4FC;         
+    --primary-foreground: #13111C; 
+    --secondary: #2D2447;       
     --secondary-foreground: #E0E7FF;
     --muted: #221C35;
     --muted-foreground: #94A3B8;
@@ -56,7 +56,7 @@
     --accent-foreground: #F8FAFC;
     --destructive: #EF4444;
     --destructive-foreground: #F8FAFC;
-    --border: #3730A3;          /* Dark visible borders */
+    --border: #3730A3;          
     --input: #3730A3;
     --ring: #A5B4FC;
     
@@ -113,7 +113,6 @@
     @apply border-border outline-ring/50;
   }
   body {
-    /* Added a beautiful 0.3s transition here so it fades instead of snapping! */
     @apply bg-background text-foreground transition-colors duration-300;
   }
 }

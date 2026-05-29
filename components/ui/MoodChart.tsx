@@ -8,7 +8,6 @@ interface MoodData {
   score: number;
 }
 
-// We keep the mock data inside the component to use as the "blurred background"
 const demoData = [
   { day: "Mon", score: 4 },
   { day: "Tue", score: 6 },
@@ -19,16 +18,13 @@ const demoData = [
   { day: "Sun", score: 8 },
 ]
 
-// We add a 'locked' boolean to the props
 export function MoodChart({ data, isLocked = false }: { data: MoodData[], isLocked?: boolean }) {
-  // If locked, we feed the chart the demo data so it draws a pretty curve to blur
   const chartData = isLocked ? demoData : data
 
   return (
     <div className="relative h-[250px] w-full bg-card rounded-2xl border border-border p-4 shadow-sm overflow-hidden">
       <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-4">7-Day Mood Trend</h3>
       
-      {/* The Chart Container - We apply a blur if it's locked! */}
       <div className={`w-full h-[calc(100%-2rem)] transition-all duration-500 ${isLocked ? "blur-[2px] opacity-70" : ""}`}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
@@ -52,7 +48,6 @@ export function MoodChart({ data, isLocked = false }: { data: MoodData[], isLock
         </ResponsiveContainer>
       </div>
 
-      {/* The Glassmorphism Overlay (Only renders if locked) */}
       {isLocked && (
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/10 backdrop-blur-[1px]">
           <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-border/50 bg-background/80 px-6 py-4 shadow-lg backdrop-blur-md">

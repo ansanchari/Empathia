@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string)
 
-// --- NEW: The Biological Math Engine ---
+//The Biological Math Engine
 function calculateMenstrualPhase(lastPeriodStart: string, cycleLength: number): string {
   if (!lastPeriodStart || !cycleLength) return ""
   
@@ -55,10 +55,10 @@ export async function POST(req: Request) {
     }
 
     let historicalContext = ""
-    let bioContext = "" // --- NEW: Biological Context Variable ---
+    let bioContext = ""
     
     if (partnerId) {
-      // --- NEW: Fetch Partner's Biological Profile ---
+      //Fetch Partner's Biological Profile
       const { data: partnerProfile } = await supabase
         .from('profiles')
         .select('track_cycle, cycle_length, last_period_start')
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
         `
       }
 
-      // --- EXISTING RAG SEARCH ---
+      //EXISTING RAG SEARCH
       if (latestContext) {
         const embedModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" })
         const embedResult = await embedModel.embedContent(latestContext)
@@ -100,7 +100,7 @@ export async function POST(req: Request) {
 
     const sanitizedData = chartData?.map((log: any) => ({ day: log.day, score: log.score })) || []
 
-    // --- UPDATED: The prompt now includes the bioContext ---
+    //The prompt includes the bioContext
     const prompt = `
       You are an empathetic, insightful relationship copilot built into a mood-tracking app. 
       The user's partner (Alias: "The Partner") has logged the following recent mood scores out of 10:

@@ -27,10 +27,10 @@ import {
   Sun,
   Moon,
   Monitor,
-  AlertTriangle // <-- ADDED: Warning icon for the modal
+  AlertTriangle
 } from "lucide-react"
 
-// --- Animation Variants ---
+//Animation Variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -47,7 +47,7 @@ const itemVariants: Variants = {
   }
 }
 
-// --- Custom Brand Icons ---
+//Custom Brand Icons
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -94,7 +94,7 @@ export function SettingsScreen() {
   const [refreshingOTP, setRefreshingOTP] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
 
-  // --- NEW: State to control the Disconnect Modal ---
+  //State to control the Disconnect Modal
   const [showDisconnectModal, setShowDisconnectModal] = useState(false)
 
   const [trackCycle, setTrackCycle] = useState(profile.trackCycle)
@@ -201,7 +201,7 @@ export function SettingsScreen() {
     setTimeout(() => setSaved(false), 2000)
   }
 
-  // --- UPGRADED: Logic separated from the UI alert ---
+  //Logic separated from the UI alert
   const executeDisconnect = async () => {
     const { error } = await supabase
       .from('relationships')
@@ -513,7 +513,7 @@ export function SettingsScreen() {
               </div>
               
               <button 
-                // --- UPGRADED: Trigger the in-app modal instead of browser alert ---
+                //Trigger the in-app modal instead of browser alert
                 onClick={() => setShowDisconnectModal(true)}
                 className="flex items-center justify-center gap-2 rounded-xl border border-accent/20 bg-accent/5 py-3 text-sm font-semibold text-accent transition-all hover:bg-accent/10 active:scale-[0.98]"
               >
@@ -572,7 +572,6 @@ export function SettingsScreen() {
 
 <div className="flex flex-col gap-2">
   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Enter Partner Code</span>
-  {/* Changed from flex-row to flex-col to stack them vertically */}
   <div className="flex flex-col gap-3">
     <input
       type="text"
@@ -585,7 +584,6 @@ export function SettingsScreen() {
     <button
       onClick={handleLinkPartner}
       disabled={linking || partnerCodeInput.length !== 6}
-      // Changed to w-full and py-3.5 to make it a nice, thick mobile button
       className="w-full rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:brightness-105 active:scale-95 disabled:opacity-50"
     >
       {linking ? "Linking..." : "Link Partner"}
@@ -650,7 +648,6 @@ export function SettingsScreen() {
 
       </motion.div>
 
-      {/* --- NEW: The Custom Disconnect Modal --- */}
       <AnimatePresence>
         {showDisconnectModal && (
           <motion.div

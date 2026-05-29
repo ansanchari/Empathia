@@ -35,7 +35,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* NEW: Actually injecting the fonts into the app so Tailwind can use them! */}
       <body className={`${dmSans.variable} ${dmSerif.variable} font-sans antialiased bg-background text-foreground`}>
         
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
