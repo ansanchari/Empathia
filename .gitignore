@@ -26,3 +26,4 @@ build/
 
 # Typescript compilation cache
 *.tsbuildinfo
+components/EmpathiaDebugger.tsx

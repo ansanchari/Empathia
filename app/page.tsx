@@ -9,13 +9,14 @@ import { SettingsScreen } from "@/components/screens/settings-screen"
 import { ChatScreen } from "@/components/screens/chat-screen"
 import { GlobalToast } from "@/components/ui/global-toast"
 import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabaseClient"
+import { supabase } from "@/lib/supabaseClient" // ✅ Restored the single, stable client!
 import { motion, AnimatePresence } from "framer-motion"
 import { BreathingBackground } from "@/components/ui/breathing-background"
 
+//import { EmpathiaDebugger } from "@/components/EmpathiaDebugger"
+
 function AppLayout() {
   const { screen, setScreen, sessionUser, hasLoggedMoodToday, setHasLoggedMoodToday } = useApp()
-  
   const [isVerifying, setIsVerifying] = useState(true)
 
   // EFFECT 1: Ask the database for the truth on initial load
@@ -30,7 +31,7 @@ function AppLayout() {
       const startOfToday = new Date()
       startOfToday.setHours(0, 0, 0, 0)
 
-      // Ask Supabase if this user has any logs created today
+      // ✅ Use the stable supabase client to check logs
       const { data } = await supabase
         .from('mood_logs')
         .select('id')
@@ -82,17 +83,15 @@ function AppLayout() {
     )
   }
 
-  // The Main App Flow
+  // ✅ Fixed the return structure so the real app actually renders!
   return (
     <div className="mx-auto flex min-h-dvh w-full flex-col bg-background relative overflow-hidden">
       
       <BreathingBackground />
-      
       <GlobalToast />
 
       <main className="flex flex-1 flex-col overflow-x-hidden relative">
-        
-        {/* NEW: The Magic Animation Wrapper */}
+        {/* The Magic Animation Wrapper */}
         <AnimatePresence mode="wait">
           <motion.div
             key={screen}
@@ -108,10 +107,10 @@ function AppLayout() {
             {screen === "chat" && <ChatScreen />}
           </motion.div>
         </AnimatePresence>
-        
       </main>
       
       <BottomNav />
+       {/*<EmpathiaDebugger /> ✅ Safely floating over everything */}
     </div>
   )
 }

@@ -26,6 +26,8 @@ export function ChatScreen() {
   
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
+  const [toastError, setToastError] = useState<string | null>(null)
+
   useEffect(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollIntoView({ behavior: "smooth" })
@@ -60,7 +62,6 @@ export function ChatScreen() {
       if (history && isMounted) {
         setMessages(history)
         
-        //Mark unread messages from partner as read on initial load
         const unreadIds = history
           .filter(m => m.sender_id !== sessionUser?.id && !m.is_read)
           .map(m => m.id)
@@ -90,13 +91,11 @@ export function ChatScreen() {
                 return [...prev, newMsg]
               })
               
-              //If you have the chat open and receive a message, instantly mark it read
               if (newMsg.sender_id !== sessionUser?.id) {
                 supabase.from('messages').update({ is_read: true }).eq('id', newMsg.id).then()
               }
             }
 
-            //Update the UI when a message gets marked as read
             if (payload.eventType === 'UPDATE') {
               const updatedMsg = payload.new as ChatMessage
               setMessages((prev) => prev.map(msg => msg.id === updatedMsg.id ? updatedMsg : msg))
@@ -114,6 +113,13 @@ export function ChatScreen() {
     }
   }, [sessionUser?.id])
 
+  const showError = (message: string) => {
+    setToastError(message)
+    setTimeout(() => {
+      setToastError(null)
+    }, 3000)
+  }
+
   const handleSend = async () => {
     if (!inputValue.trim() || !relationshipId) return
 
@@ -121,23 +127,42 @@ export function ChatScreen() {
     const textToSend = inputValue.trim()
     setInputValue("")
 
-    const { data, error } = await supabase
-      .from('messages')
-      .insert([{ relationship_id: relationshipId, sender_id: sessionUser?.id, content: textToSend, is_read: false }])
-      .select()
-      .single()
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
 
-    if (error) {
-      alert("Failed to send message.")
-      setInputValue(textToSend) 
-    } else if (data) {
-      setMessages((prev) => {
-        if (prev.some(msg => msg.id === data.id)) return prev
-        return [...prev, data]
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
+        body: JSON.stringify({
+          relationship_id: relationshipId,
+          content: textToSend,
+        })
       })
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          showError("You're sending messages too fast. Take a breath.")
+        } else {
+          showError("Failed to send message.")
+        }
+        setInputValue(textToSend) 
+      } else {
+        const data = await response.json()
+        setMessages((prev) => {
+          if (prev.some(msg => msg.id === data.id)) return prev
+          return [...prev, data]
+        })
+      }
+    } catch (error) {
+      console.error("Error sending message:", error)
+      showError("Network error. Check your connection.")
+      setInputValue(textToSend)
+    } finally {
+      setIsSending(false)
     }
-    
-    setIsSending(false)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -206,7 +231,6 @@ export function ChatScreen() {
                   >
                     <p className="break-words leading-relaxed">{message.content}</p>
                     
-                    {/* --- UPGRADED: Timestamp and Read Receipts UI --- */}
                     <div className={`flex items-center gap-1.5 mt-1.5 justify-end ${isMe ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
                       <span className="text-[10px] font-medium">
                         {new Date(message.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -232,8 +256,22 @@ export function ChatScreen() {
         onSubmit={(e) => { e.preventDefault(); handleSend(); }}
         className="fixed bottom-[85px] z-40 flex w-full justify-center px-4 pointer-events-none"
       >
-        <div className="flex w-full max-w-2xl shrink-0 items-center gap-2 rounded-full border border-border/40 bg-background/60 backdrop-blur-xl p-1.5 shadow-xl shadow-black/5 pointer-events-auto transition-all focus-within:bg-background/80 focus-within:border-primary/30">
+        <div className="relative flex w-full max-w-2xl shrink-0 items-center gap-2 rounded-full border border-border/40 bg-background/60 backdrop-blur-xl p-1.5 shadow-xl shadow-black/5 pointer-events-auto transition-all focus-within:bg-background/80 focus-within:border-primary/30">
           
+          <AnimatePresence>
+            {toastError && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95, x: "-50%" }}
+                animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
+                exit={{ opacity: 0, y: 10, scale: 0.95, x: "-50%" }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className="absolute -top-14 left-1/2 bg-destructive/90 text-destructive-foreground text-xs font-medium px-4 py-2 rounded-full shadow-lg backdrop-blur-md pointer-events-none border border-destructive whitespace-nowrap"
+              >
+                {toastError}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <input
             type="text"
             value={inputValue}

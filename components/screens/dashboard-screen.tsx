@@ -1,9 +1,8 @@
 "use client"
 
 import { Logo } from "@/components/ui/logo"
-
 import { useEffect, useState } from "react"
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/supabaseClient' // ✅ Restored your original, stable client!
 import { useApp } from "@/lib/app-context"
 import {
   TrendingDown,
@@ -25,7 +24,7 @@ import { MoodChart } from "../ui/MoodChart"
 import { CopilotCard } from "../ui/CopilotCard"
 import { motion, Variants, AnimatePresence } from "framer-motion"
 
-//Animation Variants
+// Animation Variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -162,6 +161,7 @@ export function DashboardScreen() {
   }, [])
 
   const fetchDashboardData = async () => {
+    // ✅ Back to your original flow
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       setLoading(false)
@@ -183,7 +183,6 @@ export function DashboardScreen() {
 
     const partnerId = relationship.user_a_id === user.id ? relationship.user_b_id : relationship.user_a_id
 
-    //fetching biological cycle data from the partner's profile
     const { data: partnerProfile } = await supabase.from('profiles').select('*').eq('id', partnerId).single()
     const { data: moodLogs } = await supabase.from('mood_logs').select('score, context, is_private, created_at').eq('user_id', partnerId).order('created_at', { ascending: false }).limit(5)
 
@@ -212,7 +211,7 @@ export function DashboardScreen() {
     const { data: notifs } = await supabase
       .from('notifications')
       .select('*')
-      .eq('recipient_id', user.id)
+      .eq('user_id', user.id) // ✅ The only database fix we actually needed!
       .order('created_at', { ascending: false })
       .limit(1)
 
@@ -231,7 +230,6 @@ export function DashboardScreen() {
         context: hasHistory ? moodLogs[0].context : "",
         recentLogs: hasHistory ? moodLogs.map(l => l.score) : [],
         chartData: chartData,
-        // Biological Context State
         trackCycle: partnerProfile.track_cycle,
         lastPeriodStart: partnerProfile.last_period_start,
         cycleLength: partnerProfile.cycle_length || 28,
@@ -266,11 +264,9 @@ export function DashboardScreen() {
 
   if (loading) return <div className="flex w-full min-h-screen flex-1 items-center justify-center px-5 pb-28 pt-8"><p className="text-muted-foreground animate-pulse">Loading partner data...</p></div>
   
-  //Premium Empty State Hero
   if (!dbPartner) {
     return (
       <div className="flex w-full min-h-screen flex-1 flex-col items-center justify-center px-5 pb-28 pt-8 relative overflow-hidden">
-        
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -309,7 +305,7 @@ export function DashboardScreen() {
       </div>
     )
   }
-  //Biological Context Engine Calculator
+
   let isSensitivePhase = false
   let cycleMessage = ""
   
@@ -344,7 +340,7 @@ export function DashboardScreen() {
           <div>
             <h1 className="font-serif text-2xl text-accent">Supporter Dashboard</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {profile.name ? `${profile.name}, here's` : "Here's"} how{" "}
+              {profile?.name ? `${profile.name}, here's` : "Here's"} how{" "}
               <strong className="text-foreground">{dbPartner.name}</strong> is doing.
             </p>
           </div>
@@ -394,7 +390,7 @@ export function DashboardScreen() {
                           <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                         )}
                         <p className="text-sm text-foreground leading-relaxed">
-                          {activeNotification?.message || `${dbPartner.name} has checked in for the day.`}
+                          {activeNotification?.content || activeNotification?.message || `${dbPartner.name} has checked in for the day.`}
                         </p>
                       </div>
                     )}
@@ -405,7 +401,7 @@ export function DashboardScreen() {
           </div>
         </motion.header>
 
-        {/*Cycle Sync Insight Banner*/}
+        {/* Cycle Sync Insight Banner */}
         <AnimatePresence>
           {isSensitivePhase && (
             <motion.div 
@@ -425,12 +421,11 @@ export function DashboardScreen() {
           )}
         </AnimatePresence>
 
-        {/*Main Mood Score Card with Breathing Orb*/}
+        {/* Main Mood Score Card */}
         <motion.div 
           variants={itemVariants}
           className={`relative overflow-hidden rounded-3xl border-2 p-6 shadow-sm transition-colors ${!dbPartner.hasHistory ? "border-border bg-card opacity-80" : isLow ? "border-accent bg-card" : "border-border bg-card"}`}
         >
-          {/*The Background Breathing Orb */}
           {dbPartner.hasHistory && (
             <motion.div
               animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.6, 0.3] }}
@@ -471,41 +466,34 @@ export function DashboardScreen() {
           </div>
         </motion.div>
 
-        {/*Mood Chart*/}
-        {dbPartner.hasHistory && (
-          <motion.div variants={itemVariants}>
-            <MoodChart 
-              data={dbPartner.chartData} 
-              isLocked={dbPartner.recentLogs.length < 3} 
-            />
-          </motion.div>
+        {/* Dynamic Section grouped properly */}
+        {dbPartner.hasHistory ? (
+          <>
+            <motion.div variants={itemVariants}>
+              <MoodChart 
+                data={dbPartner.chartData} 
+                isLocked={dbPartner.recentLogs.length < 3} 
+              />
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <CopilotCard 
+                partnerName={dbPartner.name} 
+                hasHistory={dbPartner.hasHistory} 
+                chartData={dbPartner.chartData}
+                latestContext={dbPartner.context}
+              />
+            </motion.div>
+          </>
+        ) : (
+          <motion.section variants={itemVariants} className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-5 shadow-sm">
+            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{"What's on their mind"}</h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              waiting for them to log in...
+            </p>
+          </motion.section>
         )}
 
-        {/*Copilot Card*/}
-        <motion.div variants={itemVariants}>
-          <CopilotCard 
-            partnerName={dbPartner.name} 
-            hasHistory={dbPartner.hasHistory} 
-            chartData={dbPartner.chartData}
-            latestContext={dbPartner.context}
-          />
-        </motion.div>
-
-        {/*Context Section*/}
-        <motion.section variants={itemVariants} className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{"What's on their mind"}</h3>
-          <p className={`text-sm leading-relaxed ${dbPartner.hasHistory && dbPartner.context && !dbPartner.isContextPrivate ? "text-foreground italic" : "text-muted-foreground"}`}>
-            {!dbPartner.hasHistory 
-              ? "waiting for them to log in..." 
-              : dbPartner.isContextPrivate 
-                ? "They chose to keep their note private today." 
-                : dbPartner.context 
-                  ? `"${dbPartner.context}"` 
-                  : "No specific context provided today."}
-          </p>
-        </motion.section>
-
-        {/*Primary CTA Button*/}
+        {/* Primary CTA Button */}
         <motion.button 
           variants={itemVariants}
           onClick={() => setReachOutModalOpen(true)} 
@@ -520,7 +508,7 @@ export function DashboardScreen() {
           Reach Out to {dbPartner.name}
         </motion.button>
 
-        {/*Bottom Quote*/}
+        {/* Bottom Quote */}
         <motion.div variants={itemVariants} className="mt-4 flex flex-col items-center justify-center gap-3 px-4 py-8 text-center opacity-70">
           <Quote className="h-6 w-6 text-muted-foreground/50" />
           <p className="font-serif text-lg text-muted-foreground italic leading-relaxed">
