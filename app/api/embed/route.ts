@@ -8,7 +8,6 @@ export async function POST(req: Request) {
     const { text } = await req.json()
     if (!text) return NextResponse.json({ embedding: null })
 
-    // Use Google's dedicated embedding model
     const model = genAI.getGenerativeModel({ model: "gemini-embedding-001" })
     const result = await model.embedContent(text)
     

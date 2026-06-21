@@ -7,7 +7,6 @@ export type Screen = "onboarding" | "mood" | "dashboard" | "settings" | "chat"
 export type RelationshipRole = "Parent" | "Child" | "Spouse" | "Sibling" | "Friend" | ""
 export type PreferredApp = "WhatsApp" | "Telegram" | "SMS"
 
-// --- NEW: Gender Type ---
 export type Gender = "Female" | "Male" | "Non-Binary" | "Prefer not to say" | ""
 
 export interface MoodEntry {
@@ -26,7 +25,6 @@ export interface UserProfile {
   phoneNumber: string
   isLinked: boolean
   
-  // --- NEW: Biological Context Fields ---
   gender: Gender
   trackCycle: boolean
   cycleLength: number
@@ -74,7 +72,6 @@ function generateCode(): string {
 export function AppProvider({ children }: { children: ReactNode }) {
   const [isInitializing, setIsInitializing] = useState(true)
   
-  // --- The Security Badge (Tracks active login state) ---
   const [sessionUser, setSessionUser] = useState<any>(null)
   
   const [screen, setRawScreen] = useState<Screen>("onboarding")
@@ -90,7 +87,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     phoneNumber: "",
     isLinked: false,
     
-    // --- NEW: Initial biological state defaults ---
     gender: "",
     trackCycle: false,
     cycleLength: 28,
@@ -108,12 +104,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setMoodHistory((prev) => [entry, ...prev])
   }, [])
 
-  // --- THE BOUNCER: Route logic on initial load ---
   useEffect(() => {
     async function restoreSession() {
       const { data: { session } } = await supabase.auth.getSession()
 
-      // 1. If no session, strip the badge and lock them on Onboarding
       if (!session?.user) {
         setSessionUser(null)
         setRawScreen("onboarding")
@@ -121,7 +115,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      // 2. Grant the Security Badge!
       setSessionUser(session.user)
 
       const { data: dbProfile } = await supabase
@@ -135,7 +128,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
           name: dbProfile.full_name || "",
           preferredApp: (dbProfile.preferred_app as PreferredApp) || "WhatsApp",
           phoneNumber: dbProfile.contact_info || "",
-          // --- NEW: Restore biological data if it exists ---
           gender: (dbProfile.gender as Gender) || "",
           trackCycle: dbProfile.track_cycle || false,
           cycleLength: dbProfile.cycle_length || 28,
@@ -167,7 +159,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     restoreSession()
 
-    // 3. Listen for Log Outs and instantly revoke the Security Badge
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || !session) {
         setSessionUser(null)
@@ -183,12 +174,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [updateProfile])
 
-  // --- UPDATED: Removed the aggressive sync locks to prevent race conditions ---
   const setScreen = useCallback((newScreen: Screen) => {
     
-    // BEHAVIORAL LOCK: You must log a mood to see the Dashboard
     if (newScreen === "dashboard" && !hasLoggedMoodToday) {
-      // We removed the alert() here! BottomNav handles the warning UI now.
       setRawScreen("mood")
       return
     }

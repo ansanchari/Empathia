@@ -11,7 +11,6 @@ export const useSpeechRecognition = () => {
   useEffect(() => {
     if (typeof window === "undefined") return
 
-    // Handle browser prefixes
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     
     if (!SpeechRecognition) {
@@ -22,9 +21,7 @@ export const useSpeechRecognition = () => {
     recognitionRef.current = new SpeechRecognition()
     const recognition = recognitionRef.current
 
-    // Keep listening even if they pause speaking
     recognition.continuous = true
-    // Show words as they are being spoken
     recognition.interimResults = true 
 
     recognition.onresult = (event: any) => {

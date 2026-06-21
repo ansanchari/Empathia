@@ -4,7 +4,6 @@ import { NextResponse } from "next/server"
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string)
 
-//The Biological Math Engine
 function calculateMenstrualPhase(lastPeriodStart: string, cycleLength: number): string {
   if (!lastPeriodStart || !cycleLength) return ""
   
@@ -13,7 +12,6 @@ function calculateMenstrualPhase(lastPeriodStart: string, cycleLength: number): 
   const diffTime = Math.abs(today.getTime() - start.getTime())
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
   
-  // Find where they are in their current cycle loop
   const currentDay = (diffDays % cycleLength) + 1
   
   if (currentDay >= 1 && currentDay <= 5) return "Menstrual Phase (Energy is likely lowest, cravings or physical discomfort common. Needs physical comfort and rest.)"
@@ -41,7 +39,6 @@ export async function POST(req: Request) {
 
     const { chartData, latestContext } = await req.json()
 
-    // 1. Find the Partner ID
     const { data: relationship } = await supabase
       .from('relationships')
       .select('user_a_id, user_b_id')
@@ -58,7 +55,6 @@ export async function POST(req: Request) {
     let bioContext = ""
     
     if (partnerId) {
-      //Fetch Partner's Biological Profile
       const { data: partnerProfile } = await supabase
         .from('profiles')
         .select('track_cycle, cycle_length, last_period_start')
@@ -75,7 +71,6 @@ export async function POST(req: Request) {
         `
       }
 
-      //EXISTING RAG SEARCH
       if (latestContext) {
         const embedModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" })
         const embedResult = await embedModel.embedContent(latestContext)
@@ -100,7 +95,6 @@ export async function POST(req: Request) {
 
     const sanitizedData = chartData?.map((log: any) => ({ day: log.day, score: log.score })) || []
 
-    //The prompt includes the bioContext
     const prompt = `
       You are an empathetic, insightful relationship copilot built into a mood-tracking app. 
       The user's partner (Alias: "The Partner") has logged the following recent mood scores out of 10:

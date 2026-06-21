@@ -8,7 +8,6 @@ import { EyeOff, Eye, Send, Smile, Frown, Meh, Loader2, Plus, Check, MessageSqua
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition"
 import { motion, Variants, AnimatePresence } from "framer-motion"
 
-//Animation Variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -214,7 +213,6 @@ export function MoodScreen() {
         className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-5 relative"
       >
         
-        {/* Header */}
         <motion.header variants={itemVariants} className="text-center mt-2">
           <h1 className="font-serif text-3xl font-medium text-accent">How are you feeling?</h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -222,7 +220,6 @@ export function MoodScreen() {
           </p>
         </motion.header>
 
-        {/*Dynamic Breathing Mood Card */}
         <motion.div 
           variants={itemVariants} 
           animate={{ 
@@ -275,7 +272,6 @@ export function MoodScreen() {
           </div>
         </motion.div>
 
-        {/* Vertical Slider */}
         <motion.div variants={itemVariants} className="flex flex-col gap-4 px-2">
           <div className="relative h-4 w-full rounded-full bg-secondary border border-border shadow-inner">
             <div
@@ -325,7 +321,6 @@ export function MoodScreen() {
             </button>
           </div>
 
-          {/*The Quick Chips Grid with Tactile Feedback */}
           <div className="flex flex-wrap gap-2.5">
             {currentTags.map(tag => {
               const isSelected = selectedTags.includes(tag)
@@ -372,7 +367,6 @@ export function MoodScreen() {
                     : "border-dashed border-border/70 bg-transparent text-muted-foreground hover:bg-secondary"
                 }`}
               >
-                {/* Pulsing Aura for active listening */}
                 {isListening && (
                   <span className="absolute inset-0 rounded-full bg-red-500/20 animate-ping" />
                 )}
@@ -382,7 +376,6 @@ export function MoodScreen() {
             )}
           </div>
 
-          {/* The Custom Text Area */}
           <AnimatePresence>
             {(showCustom || context.length > 0 || isListening) && (
               <motion.div 
@@ -424,7 +417,6 @@ export function MoodScreen() {
           )}
         </motion.section>
 
-        {/* Submit Button */}
         <motion.button
           variants={itemVariants}
           onClick={handleSubmit}

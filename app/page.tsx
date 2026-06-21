@@ -9,7 +9,7 @@ import { SettingsScreen } from "@/components/screens/settings-screen"
 import { ChatScreen } from "@/components/screens/chat-screen"
 import { GlobalToast } from "@/components/ui/global-toast"
 import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabaseClient" // ✅ Restored the single, stable client!
+import { supabase } from "@/lib/supabaseClient"
 import { motion, AnimatePresence } from "framer-motion"
 import { BreathingBackground } from "@/components/ui/breathing-background"
 
@@ -19,7 +19,6 @@ function AppLayout() {
   const { screen, setScreen, sessionUser, hasLoggedMoodToday, setHasLoggedMoodToday } = useApp()
   const [isVerifying, setIsVerifying] = useState(true)
 
-  // EFFECT 1: Ask the database for the truth on initial load
   useEffect(() => {
     if (!sessionUser) {
       setIsVerifying(false)
@@ -27,11 +26,9 @@ function AppLayout() {
     }
 
     const verifyTodaysMood = async () => {
-      // Find the exact start of today in the user's local timezone
       const startOfToday = new Date()
       startOfToday.setHours(0, 0, 0, 0)
 
-      // ✅ Use the stable supabase client to check logs
       const { data } = await supabase
         .from('mood_logs')
         .select('id')
@@ -41,40 +38,32 @@ function AppLayout() {
 
       const userLoggedToday = Boolean(data && data.length > 0)
 
-      // Tell the global context the truth!
       if (setHasLoggedMoodToday) {
         setHasLoggedMoodToday(userLoggedToday)
       }
       
-      // We are done checking, unlock the app
       setIsVerifying(false)
     }
 
     verifyTodaysMood()
   }, [sessionUser, setHasLoggedMoodToday])
 
-  // EFFECT 2: The Silent Bouncer
   useEffect(() => {
-    // Don't make any routing decisions until we finish checking the database
     if (isVerifying || !sessionUser) return 
 
-    // Keep logged-in users off the onboarding screen
     if (screen === "onboarding") {
       setScreen(hasLoggedMoodToday ? "dashboard" : "mood")
     } 
-    // The Absolute Fail-Safe Guard (SILENT)
     else if (screen === "dashboard" && hasLoggedMoodToday === false) {
       setScreen("mood")
     }
   }, [screen, hasLoggedMoodToday, isVerifying, sessionUser, setScreen])
 
 
-  // If the app is still fetching the user or verifying the mood, show a clean background
   if (isVerifying) {
     return <div className="mx-auto min-h-dvh w-full bg-background relative" />
   }
 
-  // If no user is logged in, trap them on Onboarding
   if (!sessionUser) {
     return (
       <div className="mx-auto min-h-dvh w-full bg-background relative">
@@ -83,7 +72,6 @@ function AppLayout() {
     )
   }
 
-  // ✅ Fixed the return structure so the real app actually renders!
   return (
     <div className="mx-auto flex min-h-dvh w-full flex-col bg-background relative overflow-hidden">
       
@@ -91,7 +79,6 @@ function AppLayout() {
       <GlobalToast />
 
       <main className="flex flex-1 flex-col overflow-x-hidden relative">
-        {/* The Magic Animation Wrapper */}
         <AnimatePresence mode="wait">
           <motion.div
             key={screen}
@@ -110,7 +97,7 @@ function AppLayout() {
       </main>
       
       <BottomNav />
-       {/*<EmpathiaDebugger /> ✅ Safely floating over everything */}
+       {/*<EmpathiaDebugger /> */}
     </div>
   )
 }

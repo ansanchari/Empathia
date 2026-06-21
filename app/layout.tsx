@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#818CF8', // Updated to match the new Soft Indigo primary color
+  themeColor: '#818CF8',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,

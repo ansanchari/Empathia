@@ -12,7 +12,6 @@ export function OnboardingScreen() {
   const [isLoginMode, setIsLoginMode] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Form State
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
@@ -21,7 +20,6 @@ export function OnboardingScreen() {
   const [cycleLength, setCycleLength] = useState(28)
   const [lastPeriodStart, setLastPeriodStart] = useState("")
   
-  //Optional Partner Code State
   const [partnerCodeInput, setPartnerCodeInput] = useState("")
 
   const shouldShowCycleSync = gender === "Female" || gender === "Non-Binary"
@@ -32,7 +30,6 @@ export function OnboardingScreen() {
 
     try {
       if (isLoginMode) {
-        //THE EXPLICIT LOGIN FLOW
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -41,7 +38,6 @@ export function OnboardingScreen() {
         if (signInError) throw signInError
         if (!signInData.user) throw new Error("Login failed.")
 
-        // Fetch their existing profile data to hydrate the app state
         const { data: dbProfile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -64,7 +60,6 @@ export function OnboardingScreen() {
         setScreen("dashboard")
 
       } else {
-        //EXPLICIT SIGN UP FLOW
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
@@ -76,7 +71,6 @@ export function OnboardingScreen() {
         if (signUpError) throw signUpError
         if (!signUpData.user) throw new Error("Sign up failed.")
 
-        // Save their new biological profile data
         const safeLastPeriod = lastPeriodStart === "" ? null : lastPeriodStart
 
         const { error: dbError } = await supabase
@@ -108,7 +102,6 @@ export function OnboardingScreen() {
           }
         }
 
-        // Update local app state
         updateProfile({ name, gender, trackCycle, cycleLength, lastPeriodStart: safeLastPeriod || "" })
         setSessionUser(signUpData.user)
         setScreen("mood")
@@ -126,7 +119,6 @@ export function OnboardingScreen() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6">
       <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-4">
         
-        {/* Header */}
         <div className="-mb-5 text-center">
           <Logo size={260} />
           <p className="text-sm text-muted-foreground">
@@ -136,7 +128,6 @@ export function OnboardingScreen() {
 
         <form onSubmit={handleAuth} className="flex flex-col gap-5">
           
-          {/* Email & Password (Always Visible) */}
           <div className="flex flex-col gap-4 bg-card p-5 rounded-3xl border border-border shadow-sm">
             <div className="relative">
               <Mail className="absolute left-4 top-3.5 h-5 w-5 text-muted-foreground" />
@@ -163,7 +154,6 @@ export function OnboardingScreen() {
             </div>
           </div>
 
-          {/* Profile Setup (Only visible during Sign Up) */}
           {!isLoginMode && (
             <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-top-4">
               
@@ -257,7 +247,6 @@ export function OnboardingScreen() {
                 </div>
               )}
 
-              {/*Optional Partner Code */}
               <div className="flex flex-col gap-2 mt-2 animate-in fade-in">
                 <label className="text-sm font-semibold text-foreground px-1">Partner Code (Optional)</label>
                 <div className="relative">
@@ -277,7 +266,6 @@ export function OnboardingScreen() {
             </div>
           )}
 
-          {/* Action Button */}
           <button
             type="submit"
             disabled={isSubmitting || (!isLoginMode && (!name || !gender))}
@@ -294,7 +282,6 @@ export function OnboardingScreen() {
           </button>
         </form>
 
-        {/* The Toggle Button */}
         <div className="mt-8 text-center">
           <button
             onClick={() => {

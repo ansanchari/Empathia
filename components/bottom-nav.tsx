@@ -17,11 +17,9 @@ export function BottomNav() {
   const [showWarning, setShowWarning] = useState(false)
 
   const handleNavigation = (targetScreen: Screen) => {
-    //Show custom in-app warning instead of browser alert
     if (targetScreen === "dashboard" && hasLoggedMoodToday === false) {
       setShowWarning(true)
       
-      // Auto-hide the warning after 3 seconds
       setTimeout(() => {
         setShowWarning(false)
       }, 3000)
@@ -30,13 +28,11 @@ export function BottomNav() {
       return
     }
     
-    // Otherwise, let them through
     setScreen(targetScreen)
   }
 
   return (
     <>
-      {/*NEW: In-App Toast Notification*/}
       <AnimatePresence>
         {showWarning && (
           <motion.div

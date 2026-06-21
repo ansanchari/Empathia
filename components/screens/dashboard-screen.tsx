@@ -2,7 +2,7 @@
 
 import { Logo } from "@/components/ui/logo"
 import { useEffect, useState } from "react"
-import { supabase } from '@/lib/supabaseClient' // ✅ Restored your original, stable client!
+import { supabase } from '@/lib/supabaseClient'
 import { useApp } from "@/lib/app-context"
 import {
   TrendingDown,
@@ -24,7 +24,6 @@ import { MoodChart } from "../ui/MoodChart"
 import { CopilotCard } from "../ui/CopilotCard"
 import { motion, Variants, AnimatePresence } from "framer-motion"
 
-// Animation Variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -161,7 +160,6 @@ export function DashboardScreen() {
   }, [])
 
   const fetchDashboardData = async () => {
-    // ✅ Back to your original flow
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       setLoading(false)
@@ -211,7 +209,7 @@ export function DashboardScreen() {
     const { data: notifs } = await supabase
       .from('notifications')
       .select('*')
-      .eq('user_id', user.id) // ✅ The only database fix we actually needed!
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(1)
 
@@ -401,7 +399,6 @@ export function DashboardScreen() {
           </div>
         </motion.header>
 
-        {/* Cycle Sync Insight Banner */}
         <AnimatePresence>
           {isSensitivePhase && (
             <motion.div 
@@ -421,7 +418,6 @@ export function DashboardScreen() {
           )}
         </AnimatePresence>
 
-        {/* Main Mood Score Card */}
         <motion.div 
           variants={itemVariants}
           className={`relative overflow-hidden rounded-3xl border-2 p-6 shadow-sm transition-colors ${!dbPartner.hasHistory ? "border-border bg-card opacity-80" : isLow ? "border-accent bg-card" : "border-border bg-card"}`}
@@ -466,7 +462,6 @@ export function DashboardScreen() {
           </div>
         </motion.div>
 
-        {/* Dynamic Section grouped properly */}
         {dbPartner.hasHistory ? (
           <>
             <motion.div variants={itemVariants}>
@@ -493,7 +488,6 @@ export function DashboardScreen() {
           </motion.section>
         )}
 
-        {/* Primary CTA Button */}
         <motion.button 
           variants={itemVariants}
           onClick={() => setReachOutModalOpen(true)} 
@@ -508,7 +502,6 @@ export function DashboardScreen() {
           Reach Out to {dbPartner.name}
         </motion.button>
 
-        {/* Bottom Quote */}
         <motion.div variants={itemVariants} className="mt-4 flex flex-col items-center justify-center gap-3 px-4 py-8 text-center opacity-70">
           <Quote className="h-6 w-6 text-muted-foreground/50" />
           <p className="font-serif text-lg text-muted-foreground italic leading-relaxed">

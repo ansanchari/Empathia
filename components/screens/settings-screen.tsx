@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from '@/lib/supabaseClient' 
 import { useApp, type PreferredApp } from "@/lib/app-context"
-import { motion, Variants, AnimatePresence } from "framer-motion" // <-- ADDED: AnimatePresence
+import { motion, Variants, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
 import { 
   Phone, 
@@ -30,7 +30,6 @@ import {
   AlertTriangle
 } from "lucide-react"
 
-//Animation Variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -47,7 +46,6 @@ const itemVariants: Variants = {
   }
 }
 
-//Custom Brand Icons
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -94,7 +92,6 @@ export function SettingsScreen() {
   const [refreshingOTP, setRefreshingOTP] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
 
-  //State to control the Disconnect Modal
   const [showDisconnectModal, setShowDisconnectModal] = useState(false)
 
   const [trackCycle, setTrackCycle] = useState(profile.trackCycle)
@@ -201,7 +198,6 @@ export function SettingsScreen() {
     setTimeout(() => setSaved(false), 2000)
   }
 
-  //Logic separated from the UI alert
   const executeDisconnect = async () => {
     const { error } = await supabase
       .from('relationships')
@@ -323,7 +319,6 @@ export function SettingsScreen() {
           </p>
         </motion.header>
 
-        {/* Appearance Section */}
         {mounted && (
           <motion.section variants={itemVariants} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-2">
@@ -373,7 +368,6 @@ export function SettingsScreen() {
           </motion.section>
         )}
 
-        {/* Profile Name */}
         <motion.section variants={itemVariants} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4 text-primary" />
@@ -388,7 +382,6 @@ export function SettingsScreen() {
           />
         </motion.section>
 
-        {/* Preferred Messaging App */}
         <motion.section variants={itemVariants} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4 text-primary" />
@@ -415,7 +408,6 @@ export function SettingsScreen() {
           </div>
         </motion.section>
 
-        {/* Contact Info */}
         <motion.section variants={itemVariants} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-2">
             <Phone className="h-4 w-4 text-primary" />
@@ -430,7 +422,6 @@ export function SettingsScreen() {
           />
         </motion.section>
 
-        {/* Biological Context Toggle */}
         {shouldShowCycleSync && (
           <motion.section variants={itemVariants} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-2">
@@ -487,7 +478,6 @@ export function SettingsScreen() {
           </motion.section>
         )}
 
-        {/* Connection Section */}
         <motion.section variants={itemVariants} className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300">
           <div className="flex items-center gap-2 border-b border-border pb-3">
             {relationship?.status === 'active' ? (
@@ -513,7 +503,6 @@ export function SettingsScreen() {
               </div>
               
               <button 
-                //Trigger the in-app modal instead of browser alert
                 onClick={() => setShowDisconnectModal(true)}
                 className="flex items-center justify-center gap-2 rounded-xl border border-accent/20 bg-accent/5 py-3 text-sm font-semibold text-accent transition-all hover:bg-accent/10 active:scale-[0.98]"
               >
@@ -594,7 +583,6 @@ export function SettingsScreen() {
           )}
         </motion.section>
 
-        {/* Info Cards */}
         <motion.div variants={itemVariants} className="flex flex-col gap-3">
           <div className="flex items-start gap-3 rounded-2xl bg-secondary p-4">
             <Shield className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
@@ -626,7 +614,6 @@ export function SettingsScreen() {
           </div>
         </motion.div>
 
-        {/* Save & Log Out Buttons */}
         <motion.div variants={itemVariants} className="flex flex-col gap-3 mt-2">
           <button
             onClick={handleSave}

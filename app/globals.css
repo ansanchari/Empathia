@@ -1,11 +1,9 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-/*support 'dark:bg-red-500' utility classes */
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
-  /*LIGHT MODE*/
   :root {
     --background: #FDFBFF;
     --foreground: #2D2447;
@@ -38,7 +36,6 @@
     --sidebar-ring: #818CF8;
   }
 
-  /*DARK MODE*/
   .dark {
     --background: #13111C;      
     --foreground: #F8FAFC;      
